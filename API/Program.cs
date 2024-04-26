@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Simple_API_DB")));
 
 builder.Services.AddScoped<IApplicantRepository, ApplicantRepo>();
+builder.Services.AddTransient<DataContextInitializer>();
 
 var app = builder.Build();
 
@@ -22,6 +23,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using var scope = app.Services.CreateScope();
+    var init = scope.ServiceProvider.GetRequiredService<DataContextInitializer>();
+    await init.InitializeAsync();
+    await init.SeedDatabaseAsync();
 }
 
 app.UseHttpsRedirection();
