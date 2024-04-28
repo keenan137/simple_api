@@ -50,8 +50,14 @@ public class DataContextInitializer
                 }
             };
 
-            _context.Applicants.Add(newApplicant);
-            await _context.SaveChangesAsync();
+            bool applicantExists = await _context.Applicants
+                                    .AnyAsync(x => x.Name == newApplicant.Name);
+
+            if (!applicantExists)
+            {
+                _context.Applicants.Add(newApplicant);
+                await _context.SaveChangesAsync();
+            }
         }
         catch (Exception e)
         {
