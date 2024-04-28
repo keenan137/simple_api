@@ -8,3 +8,4 @@
 - [ ]  Better Error Handling and Messaging
 - [ ]  Auditable Entity + Soft Deletion
 - [ ]  Clean Architecture
+- [ ]  Unit Testing
