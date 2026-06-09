@@ -11,7 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Simple_API_DB")));
+builder.Services.AddDbContext<DataContext>(options => 
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("Simple_API_DB"), 
+        sqlOptions => sqlOptions.EnableRetryOnFailure())
+);
 
 builder.Services.AddScoped<IApplicantRepository, ApplicantRepo>();
 builder.Services.AddTransient<DataContextInitializer>();
