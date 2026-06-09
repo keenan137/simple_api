@@ -20,7 +20,7 @@ public class DataContextInitializer
     {
         try
         {
-            if (_context.Database.IsNpgsql())
+            if (_context.Database.IsSqlServer())
             {
                 await _context.Database.MigrateAsync();
             }
