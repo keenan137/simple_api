@@ -1,19 +1,24 @@
 ﻿using API.Data.Repository;
 using API.Models;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
-[Route("api/[controller]")]
+namespace API.Controllers.v1;
+
+[ApiVersion("1.0")]
 [ApiController]
-public class ApplicantController : ControllerBase
+[Route("api/v{version:apiVersion}/[controller]")]             // The route template includes the API version as a URL segment, allowing clients to specify the desired API version in the request URL (e.g., "api/v1/applicant" or "api/v2/applicant").
+public class ApplicantsController : ControllerBase
 {
     private readonly IApplicantRepository _repository;
 
-    public ApplicantController(IApplicantRepository repository)
+    public ApplicantsController(IApplicantRepository repository)
     {
         _repository = repository;
     }
 
+    [MapToApiVersion("1.0")]                                // This attribute indicates that this action method is specifically mapped to API version 1. It ensures that when a request is made to this endpoint, it will only be routed to this method if the API version specified in the request matches version 1. Note: Because this controller is v1 specific this attribute is redudant and only kept for learning.
+    [Obsolete("This endpoint is deprecated. Use GET /api/v2/applicants instead.")]
     [HttpGet("/get_all")]
     public async Task<ActionResult<List<Applicant>>> GetAllApplicants()
     {
@@ -27,6 +32,7 @@ public class ApplicantController : ControllerBase
         return Ok(applicants);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpGet("/{id}")]
     public async Task<ActionResult<Applicant>> GetApplicant(int id)
     {
@@ -39,6 +45,7 @@ public class ApplicantController : ControllerBase
         return Ok(applicant);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpPost("/create")]
     public async Task<IActionResult> CreateApplicant(Applicant applicant)
     {
@@ -61,6 +68,7 @@ public class ApplicantController : ControllerBase
         return CreatedAtAction(nameof(GetApplicant), new { id = applicant.Id }, applicant);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpPut("/update/{id}")]
     public async Task<IActionResult> UpdateApplicant(int id, Applicant applicant)
     {
@@ -83,6 +91,7 @@ public class ApplicantController : ControllerBase
         return NoContent();
     }
 
+    [MapToApiVersion("1.0")]
     [HttpDelete("/delete/{id}")]
     public async Task<IActionResult> DeleteApplicant(int id)
     {
@@ -101,6 +110,8 @@ public class ApplicantController : ControllerBase
         return NoContent();
     }
 
+    [MapToApiVersion("1.0")]
+    [Obsolete("This endpoint is deprecated. Use GET /api/v2/applicants/{applicantId}/skills instead.")]
     [HttpGet("/{applicantId}/skills/get_all")]
     public async Task<IActionResult> GetSkills(int applicantId)
     {
@@ -113,6 +124,7 @@ public class ApplicantController : ControllerBase
         return Ok(skills);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpGet("/{applicantId}/skills/{skillId}")]
     public async Task<IActionResult> GetSkill(int applicantId, int skillId)
     {
@@ -128,6 +140,7 @@ public class ApplicantController : ControllerBase
         return Ok(skill);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpPost("/{applicantId}/skills")]
     public async Task<IActionResult> CreateSkill(int applicantId, Skill skill)
     {
@@ -156,6 +169,7 @@ public class ApplicantController : ControllerBase
         return CreatedAtAction(nameof(GetSkill), new { applicantId = applicantId, skillId = skill.Id }, skill);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpPut("/{applicantId}/skills/{skillId}")]
     public async Task<IActionResult> UpdateSkill(int applicantId, int skillId, Skill skill)
     {
@@ -178,6 +192,7 @@ public class ApplicantController : ControllerBase
         return NoContent();
     }
 
+    [MapToApiVersion("1.0")]
     [HttpDelete("/{applicantId}/skills/{skillId}")]
     public async Task<IActionResult> DeleteSkill(int applicantId, int skillId)
     {
